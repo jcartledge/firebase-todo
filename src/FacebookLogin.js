@@ -1,0 +1,8 @@
+import React from 'react';
+import LoginForm from './LoginForm';
+
+export default function FacebookLogin (props)  {
+  const provider = new props.firebase.auth.FacebookAuthProvider();
+  provider.addScope('public_profile,email');
+  return (<LoginForm provider={provider} {...props}>Login with Facebook</LoginForm>);
+}

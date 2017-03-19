@@ -1,11 +1,15 @@
 import firebase from 'firebase';
 import config from "./config";
 
-import React, { Component } from 'react';
+import React from 'react';
+
+import FacebookLogin from './FacebookLogin';
+import LogoutButton from './LogoutButton';
+
 import TodoForm from './TodoForm';
 import TodoList from './TodoList';
 
-export default class App extends Component {
+export default class App extends React.Component {
   handleAddTodo = (text) => this.todos.push(text);
 
   handleRemoveTodo = (key) => this.db.ref(key).remove();
@@ -19,9 +23,16 @@ export default class App extends Component {
     this.setState({todos: this.state.todos.filter(todo => todo.key !== data.key)});
   }
 
+  authStateChanged = (user) => {
+    this.setState({user});
+  }
+
   constructor (props) {
     super(props);
-    this.state = {todos: []};
+    this.state = {
+      todos: [],
+      user: {}
+    };
   }
 
   componentWillMount () {
@@ -37,11 +48,15 @@ export default class App extends Component {
   }
 
   render() {
+    const content = (this.state.user)
+      ? <div>
+          <LogoutButton firebase={firebase} changed={this.authStateChanged} />
+          <TodoForm add={this.handleAddTodo} />
+          <TodoList todos={this.state.todos} remove={this.handleRemoveTodo} />
+        </div>
+      : <FacebookLogin firebase={firebase} changed={this.authStateChanged} />;
     return (
-      <div className="App">
-        <TodoForm add={this.handleAddTodo} />
-        <TodoList todos={this.state.todos} remove={this.handleRemoveTodo} />
-      </div>
+      <div className="App"> {content} </div>
     );
   }
 }
