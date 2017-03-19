@@ -4,6 +4,7 @@ import config from "./config";
 import React from 'react';
 
 import FacebookLogin from './FacebookLogin';
+import GoogleLogin from './GoogleLogin';
 import LogoutButton from './LogoutButton';
 
 import TodoForm from './TodoForm';
@@ -48,15 +49,19 @@ export default class App extends React.Component {
   }
 
   render() {
-    const content = (this.state.user)
-      ? <div>
-          <LogoutButton firebase={firebase} changed={this.authStateChanged} />
-          <TodoForm add={this.handleAddTodo} />
-          <TodoList todos={this.state.todos} remove={this.handleRemoveTodo} />
-        </div>
-      : <FacebookLogin firebase={firebase} changed={this.authStateChanged} />;
     return (
-      <div className="App"> {content} </div>
+      <div className="App"> {
+        (this.state.user)
+        ? <div>
+            <LogoutButton firebase={firebase} changed={this.authStateChanged} />
+            <TodoForm add={this.handleAddTodo} />
+            <TodoList todos={this.state.todos} remove={this.handleRemoveTodo} />
+          </div>
+          : <div>
+            <FacebookLogin firebase={firebase} changed={this.authStateChanged} />
+            <GoogleLogin firebase={firebase} changed={this.authStateChanged} />
+          </div>
+      } </div>
     );
   }
 }
