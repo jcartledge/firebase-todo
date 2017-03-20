@@ -13,7 +13,7 @@ import TodoList from './TodoList';
 export default class App extends React.Component {
   handleAddTodo = (text) => this.todos.push(text);
 
-  handleRemoveTodo = (key) => this.db.ref(key).remove();
+  handleRemoveTodo = (key) => this.db.ref(`${this.userDBRef()}/${key}`).remove();
 
   todoAdded = (data) => {
     const todo = {text: data.val(), key: data.key};
@@ -25,23 +25,30 @@ export default class App extends React.Component {
   }
 
   authStateChanged = (user) => {
-    this.setState({user});
+    this.setState({user}, _ => {
+      if (this.state.user) {
+        this.todos = this.db.ref(this.userDBRef());
+        this.todos.on('child_added', this.todoAdded);
+        this.todos.on('child_removed', this.todoRemoved);
+      } else {
+        delete this.todos;
+        this.setState({todos: []});
+      }
+    });
   }
+  userDBRef = () => `/users/${this.state.user.user.uid}/todos`;
 
   constructor (props) {
     super(props);
     this.state = {
       todos: [],
-      user: {}
+      user: undefined
     };
   }
 
   componentWillMount () {
     firebase.initializeApp(config);
     this.db = firebase.database();
-    this.todos = this.db.ref();
-    this.todos.on('child_added', this.todoAdded);
-    this.todos.on('child_removed', this.todoRemoved);
   }
 
   componentWillUnmount () {
