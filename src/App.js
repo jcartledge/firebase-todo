@@ -31,6 +31,7 @@ export default class App extends React.Component {
         this.todos.on('child_added', this.todoAdded);
         this.todos.on('child_removed', this.todoRemoved);
       } else {
+        this.todos.off();
         delete this.todos;
         this.setState({todos: []});
       }
@@ -52,7 +53,9 @@ export default class App extends React.Component {
   }
 
   componentWillUnmount () {
-    this.db.off();
+    if (this.todos) {
+      this.todos.off();
+    }
   }
 
   render() {
