@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button} from 'react-bootstrap';
 
 export default class LoginForm extends React.Component {
   constructor(props) {
@@ -18,6 +19,6 @@ export default class LoginForm extends React.Component {
   }
 
   render() {
-    return (<button onClick={this.login}>{this.children}</button>)
+    return (<Button bsStyle="primary" block onClick={this.login}>{this.children}</Button>)
   }
 }

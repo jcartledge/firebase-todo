@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import config from "./config";
 
 import React from 'react';
+import {Grid, Row, Col} from 'react-bootstrap';
 
 import FacebookLogin from './FacebookLogin';
 import GoogleLogin from './GoogleLogin';
@@ -60,18 +61,21 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="App"> {
-        (this.state.user)
-        ? <div>
+      <Grid> {(this.state.user)
+        ? <Row>
+          <Col xs={4} xsOffset={4}>
             <LogoutButton firebase={firebase} changed={this.authStateChanged} />
             <TodoForm add={this.handleAddTodo} />
             <TodoList todos={this.state.todos} remove={this.handleRemoveTodo} />
-          </div>
-          : <div>
+          </Col>
+        </Row>
+        : <Row>
+          <Col xs={4} xsOffset={4}>
             <FacebookLogin firebase={firebase} changed={this.authStateChanged} />
             <GoogleLogin firebase={firebase} changed={this.authStateChanged} />
-          </div>
-      } </div>
+          </Col>
+        </Row>
+      } </Grid>
     );
-  }
+}
 }
